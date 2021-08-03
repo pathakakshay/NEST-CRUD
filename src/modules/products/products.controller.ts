@@ -2,10 +2,11 @@ import {
   Controller,
   Post,
   Body,
+  UnprocessableEntityException,
   Get,
-  Patch,
   Param,
   Delete,
+  Patch,
 } from '@nestjs/common';
 import { productDTO } from 'src/shared/dto/product.dto';
 import { ProductService } from 'src/shared/services';
@@ -14,23 +15,31 @@ export class ProductsController {
   constructor(private readonly prodctService: ProductService) {}
   @Post()
   async addProduct(@Body() body: productDTO): Promise<any> {
-    const generatedId = this.prodctService.insertProduct(
-      body.title,
-      body.description,
-      body.price
-    );
-
-    return { id: generatedId };
+    try {
+      const generatedId = await this.prodctService.insertProduct(
+        body.title,
+        body.description,
+        body.price
+      );
+      return { id: generatedId };
+    } catch (error: any) {
+      throw new UnprocessableEntityException(error);
+    }
   }
 
   @Get()
   async getAllProducts(): Promise<any> {
-    return this.prodctService.getProducts();
+    try {
+      const products = await this.prodctService.getAllProduct();
+      return products;
+    } catch (error: any) {
+      throw new UnprocessableEntityException(error);
+    }
   }
 
   @Get('/:id')
-  async getProduct(@Param('id') prodId: string): Promise<any> {
-    return this.prodctService.getSingleProduct(prodId);
+  async getProduct(@Param('id') prodId: number): Promise<any> {
+    return await this.prodctService.getSingleProduct(prodId);
   }
 
   @Patch('/:id')
@@ -50,7 +59,7 @@ export class ProductsController {
   }
 
   @Delete('/:id')
-  async removeProduct(@Param('id') prodId: string): Promise<any> {
+  async removeProduct(@Param('id') prodId: number): Promise<any> {
     this.prodctService.deleteProduct(prodId);
     return null;
   }

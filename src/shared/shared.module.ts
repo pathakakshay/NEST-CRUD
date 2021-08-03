@@ -1,8 +1,12 @@
 import { Module, DynamicModule } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Product } from 'src/modules/entity/product.entity';
 import { Services } from './services';
 
+const Entity = [Product];
 @Module({
-  exports: [...Services],
+  imports: [TypeOrmModule.forFeature(Entity)],
+  exports: [...Services, TypeOrmModule.forFeature(Entity)],
   providers: [...Services],
 })
 export class SharedModule {

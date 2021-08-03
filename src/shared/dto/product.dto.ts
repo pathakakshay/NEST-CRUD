@@ -5,7 +5,7 @@ export class productDTO {
   id: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
   })
   @IsNotEmpty({
     message: 'The title should not be empty',
@@ -15,7 +15,7 @@ export class productDTO {
   description: string;
 
   @ApiProperty({
-    required: false,
+    required: true,
   })
   @IsNotEmpty({
     message: 'The price should not be empty',
