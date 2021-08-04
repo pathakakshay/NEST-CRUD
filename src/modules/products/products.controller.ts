@@ -7,7 +7,10 @@ import {
   Param,
   Delete,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { productDTO } from 'src/shared/dto/product.dto';
@@ -15,6 +18,8 @@ import { ProductService } from 'src/shared/services';
 @Controller('products')
 export class ProductsController {
   constructor(private readonly prodctService: ProductService) {}
+
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @ApiOkResponse({ description: 'Successfully authenticated' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -31,10 +36,12 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOkResponse({ description: 'Successfully authenticated' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
   async getAllProducts(): Promise<any> {
+    //console.log(request.user);
     try {
       const products = await this.prodctService.getAllProduct();
       return products;
@@ -43,6 +50,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get('/:id')
   @ApiOkResponse({ description: 'Successfully authenticated' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -55,6 +63,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('/:id')
   @ApiOkResponse({ description: 'Successfully authenticated' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
@@ -77,6 +86,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('/:id')
   @ApiOkResponse({ description: 'Successfully authenticated' })
   @ApiBadRequestResponse({ description: 'Bad Request' })
